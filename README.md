@@ -2,7 +2,7 @@
 
 #In Project folder please type: docker-compose up --build
 
-At port 5000 should be running app
+#At port 5000 should be running app
 
 #Go into back-end container terminal by -it option or by Docker GUI
 
@@ -10,4 +10,4 @@ At port 5000 should be running app
 
 #You can use app. on p. 5000
 
-#__init__.py to be fixed - LEGACY and swagger
+#To be fixed - swagger
