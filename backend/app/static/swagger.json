@@ -10,6 +10,9 @@
       "post": {
         "summary": "Register a new user",
         "description": "Registers a new user and returns their user ID.",
+        "tags": [
+          "Auth"
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -58,6 +61,9 @@
       "post": {
         "summary": "Login user",
         "description": "Logs in a user and returns a token.",
+        "tags": [
+          "Auth"
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -110,6 +116,14 @@
       "post": {
         "summary": "Create a reservation",
         "description": "Allows authorized users to create a reservation.",
+        "tags": [
+          "Resevations"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -177,24 +191,16 @@
               }
             }
           }
-        },
-        "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Bearer token for authorization"
-          }
-        ]
+        }
       }
     },
     "/api/reservations/{reservation_id}": {
       "delete": {
         "summary": "Delete a reservation",
         "description": "Soft deletes a reservation by ID.",
+        "tags": [
+          "Resevations"
+        ],
         "security": [
           {
             "bearerAuth": []
@@ -231,6 +237,9 @@
       "patch": {
         "summary": "Update a reservation",
         "description": "Updates details of an existing reservation.",
+        "tags": [
+          "Resevations"
+        ],
         "security": [
           {
             "bearerAuth": []
@@ -244,7 +253,7 @@
             "schema": {
               "type": "integer"
             }
-          }
+          }      
         ],
         "responses": {
           "200": {
@@ -283,6 +292,9 @@
       "get": {
         "summary": "Get all reservations",
         "description": "Retrieves all reservations, admins only.",
+        "tags": [
+          "Resevations"
+        ],
         "security": [
           {
             "bearerAuth": []
@@ -328,6 +340,9 @@
       "get": {
         "summary": "Get user reservations",
         "description": "Retrieves all reservations for the logged-in user.",
+        "tags": [
+          "Resevations"
+        ],
         "security": [
           {
             "bearerAuth": []
@@ -369,7 +384,7 @@
         }
       }
     },
-    "/rooms": {
+    "/api/rooms": {
       "get": {
         "summary": "Get all rooms",
         "operationId": "getRooms",
@@ -461,7 +476,7 @@
         }
       }
     },
-    "/rooms/{room_id}": {
+    "/api/rooms/{room_id}": {
       "put": {
         "summary": "Update an existing room",
         "operationId": "updateRoom",
@@ -470,7 +485,7 @@
         ],
         "security": [
           {
-            "jwt": []
+            "bearerAuth": []
           }
         ],
         "parameters": [
@@ -531,7 +546,7 @@
         ],
         "security": [
           {
-            "jwt": []
+            "bearerAuth": []
           }
         ],
         "parameters": [

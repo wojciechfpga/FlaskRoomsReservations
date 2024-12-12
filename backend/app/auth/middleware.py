@@ -4,6 +4,7 @@ from flask import request, jsonify, current_app
 from app import db
 from app.models import User
 from app.constants.errors import ErrorMessages
+from app.constants.middleware_strings import MiddlewareStrings
 
 def authorization_jwt(*allowed_roles):
     def decorator(f):
@@ -12,6 +13,9 @@ def authorization_jwt(*allowed_roles):
             token = request.headers.get("Authorization")
             if not token:
                 return jsonify({"error": ErrorMessages.INVALID_AUTH}), 401
+
+            if token.startswith(MiddlewareStrings.TOKEN_START_WORD):
+                token = token[7:]
 
             try:
                 data = jwt.decode(token, current_app.config["SECRET_KEY"], algorithms=["HS256"])
