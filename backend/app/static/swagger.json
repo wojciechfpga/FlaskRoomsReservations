@@ -1,0 +1,192 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Conference Room Booking API",
+    "description": "API for managing conference rooms, reservations, and user authentication."
+  },
+  "paths": {
+    "/api/register": {
+      "post": {
+        "summary": "Register a new user",
+        "description": "Register a new user with optional role assignment.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "username": {"type": "string", "example": "john_doe"},
+                "password": {"type": "string", "example": "password123"},
+                "role": {"type": "string", "enum": ["employee", "admin"], "default": "employee"}
+              },
+              "required": ["username", "password"]
+            }
+          }
+        ],
+        "responses": {
+          "201": {"description": "User registered successfully"},
+          "400": {"description": "Validation error or user already exists"}
+        }
+      }
+    },
+    "/api/login": {
+      "post": {
+        "summary": "Login a user",
+        "description": "Authenticate a user and return a JWT token.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "username": {"type": "string", "example": "john_doe"},
+                "password": {"type": "string", "example": "password123"}
+              },
+              "required": ["username", "password"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {"description": "Login successful, returns token"},
+          "400": {"description": "Invalid username or password"}
+        }
+      }
+    },
+    "/api/rooms": {
+      "get": {
+        "summary": "Get all rooms",
+        "description": "Retrieve a list of all available conference rooms.",
+        "responses": {
+          "200": {
+            "description": "List of rooms",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {"type": "integer"},
+                  "name": {"type": "string"},
+                  "capacity": {"type": "integer"}
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new room",
+        "description": "Create a new conference room with name and capacity.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {"type": "string", "example": "Conference Room A"},
+                "capacity": {"type": "integer", "example": 10}
+              },
+              "required": ["name", "capacity"]
+            }
+          }
+        ],
+        "responses": {
+          "201": {"description": "Room created successfully"},
+          "400": {"description": "Invalid input"}
+        }
+      }
+    },
+    "/api/rooms/{room_id}": {
+      "put": {
+        "summary": "Update a room",
+        "description": "Update room details by ID.",
+        "parameters": [
+          {
+            "name": "room_id",
+            "in": "path",
+            "type": "integer",
+            "required": true,
+            "description": "Room ID to update."
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {"type": "string", "example": "Updated Room Name"},
+                "capacity": {"type": "integer", "example": 15},
+                "is_active": {"type": "boolean", "example": true}
+              },
+              "required": []
+            }
+          }
+        ],
+        "responses": {
+          "200": {"description": "Room updated successfully"},
+          "404": {"description": "Room not found"}
+        }
+      },
+      "delete": {
+        "summary": "Delete a room",
+        "description": "Soft-delete a room by ID.",
+        "parameters": [
+          {
+            "name": "room_id",
+            "in": "path",
+            "type": "integer",
+            "required": true,
+            "description": "Room ID to delete."
+          }
+        ],
+        "responses": {
+          "200": {"description": "Room deleted successfully"},
+          "404": {"description": "Room not found"}
+        }
+      }
+    },
+    "/api/reservations/{reservation_id}": {
+      "delete": {
+        "summary": "Delete a reservation",
+        "description": "Soft-delete a reservation by ID.",
+        "parameters": [
+          {
+            "name": "reservation_id",
+            "in": "path",
+            "type": "integer",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {"description": "Reservation deleted successfully"},
+          "404": {"description": "Reservation not found"}
+        }
+      }
+    },
+    "/api/reservations/all": {
+      "get": {
+        "summary": "Get all reservations (admin only)",
+        "description": "Retrieve all reservations, requires admin privileges.",
+        "responses": {
+          "200": {"description": "List of all reservations"}
+        }
+      }
+    },
+    "/api/reservations/my": {
+      "get": {
+        "summary": "Get my reservations",
+        "description": "Retrieve reservations for the authenticated user.",
+        "responses": {
+          "200": {"description": "List of user reservations"}
+        }
+      }
+    }
+  }
+}

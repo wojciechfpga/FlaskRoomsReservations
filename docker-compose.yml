@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./backend:/app
+    depends_on:
+      - db
+      - mongodb
+    environment:
+      - FLASK_APP=app:create_app
+      - FLASK_ENV=development
+      - SQLALCHEMY_DATABASE_URI=postgresql://postgres:password@db:5432/conference
+      - SECRET_KEY=wojciechsecret
+      - MONGO_URI=mongodb://mongodb:27017
+
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: conference
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  mongodb:
+    image: mongo
+    container_name: mongodb
+    ports:
+      - "27018:27017" 
+    volumes:
+      - mongo_data:/data/db
+
+  adminer:
+    image: adminer
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+
+
+volumes:
+  db_data:
+  mongo_data:
