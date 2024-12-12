@@ -11,6 +11,10 @@ bp = Blueprint(Routes.ROOM_BLUEPRINT, __name__)
 
 @bp.route(Routes.ROOMS, methods=['GET'])
 def get_rooms():
+    """
+    Get rooms
+    """
+
     rooms = GetRoomsQuery.execute()
     return jsonify(rooms)
 
@@ -18,6 +22,9 @@ def get_rooms():
 @bp.route(Routes.ROOMS, methods=['POST'])
 @authorization_jwt(Roles.ADMIN)
 def create_room(user_id):
+    """
+    Create room
+    """
     current_app.logger.info(LogMessages.USER_ENTERED_INTO.format(user_id=user_id,endpoint_name=request.endpoint))
     data = request.get_json()
     room_id = CreateRoomCommand.execute(name=data['name'], capacity=data['capacity'])
@@ -27,6 +34,9 @@ def create_room(user_id):
 @bp.route(f'/{Routes.ROOMS}/<int:room_id>', methods=['PUT'])
 @authorization_jwt(Roles.ADMIN)
 def update_room(user_id,room_id):
+    """
+    Update of room
+    """
     current_app.logger.info(LogMessages.USER_ENTERED_INTO.format(user_id=user_id,endpoint_name=request.endpoint))
     data = request.get_json()
     UpdateRoomCommand.execute(
@@ -40,6 +50,9 @@ def update_room(user_id,room_id):
 @bp.route(f'/{Routes.ROOMS}/<int:room_id>', methods=['DELETE'])
 @authorization_jwt(Roles.ADMIN)
 def delete_room(user_id,room_id):
+    """
+    Delete of room
+    """
     current_app.logger.info(LogMessages.USER_ENTERED_INTO.format(user_id=user_id,endpoint_name=request.endpoint))
     DeleteRoomCommand.execute(
         room_id=room_id
