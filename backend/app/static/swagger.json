@@ -3,7 +3,7 @@
   "info": {
     "title": "API Documentation",
     "version": "1.0.0",
-    "description": "Endpoints for user authentication and reservation management."    
+    "description": "Endpoints for user authentication and reservation management."
   },
   "paths": {
     "/api/register": {
@@ -117,7 +117,7 @@
         "summary": "Create a reservation",
         "description": "Allows authorized users to create a reservation.",
         "tags": [
-          "Resevations"
+          "Reservations"
         ],
         "security": [
           {
@@ -199,7 +199,7 @@
         "summary": "Delete a reservation",
         "description": "Soft deletes a reservation by ID.",
         "tags": [
-          "Resevations"
+          "Reservations"
         ],
         "security": [
           {
@@ -238,7 +238,7 @@
         "summary": "Update a reservation",
         "description": "Updates details of an existing reservation.",
         "tags": [
-          "Resevations"
+          "Reservations"
         ],
         "security": [
           {
@@ -253,8 +253,36 @@
             "schema": {
               "type": "integer"
             }
-          }      
+          }
         ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "room_id": {
+                    "type": "integer"
+                  },
+                  "start_time": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "end_time": {
+                    "type": "string",
+                    "format": "date-time"
+                  }
+                },
+                "required": [
+                  "room_id",
+                  "start_time",
+                  "end_time"
+                ]
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "Reservation successfully updated",
@@ -293,7 +321,7 @@
         "summary": "Get all reservations",
         "description": "Retrieves all reservations, admins only.",
         "tags": [
-          "Resevations"
+          "Reservations"
         ],
         "security": [
           {
@@ -341,7 +369,7 @@
         "summary": "Get user reservations",
         "description": "Retrieves all reservations for the logged-in user.",
         "tags": [
-          "Resevations"
+          "Reservations"
         ],
         "security": [
           {
