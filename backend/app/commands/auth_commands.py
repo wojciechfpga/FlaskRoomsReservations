@@ -1,10 +1,18 @@
-from app.models import db, User
-import jwt
+"""
+This module is intended to provide functions thats executes DB commands
+connected with auth operations
+"""
+
 import datetime
-from flask import current_app,abort
-from app.models import User
+import jwt
+from flask import current_app, abort
+from app.models import db, User
 from app.constants.errors import ErrorMessages
+
 class RegisterUserCommand:
+    """
+    Class docstring for RegisterUserCommand
+    """
     @staticmethod
     def execute(username, password, role):
         """
@@ -26,13 +34,15 @@ class RegisterUserCommand:
             return user.id
         except ValueError as ve:
             current_app.logger.info(ve)
-            abort(409, description=str(ve)) 
+            abort(409, description=str(ve))
         except Exception as e:
             current_app.logger.info(e)
-            abort(500, description=ErrorMessages.SERVER_ERROR) 
-
+            abort(500, description=ErrorMessages.SERVER_ERROR)
 
 class LoginUserCommand:
+    """
+    Class docstring for LoginUserCommand
+    """
     @staticmethod
     def execute(username, password):
         """
@@ -52,9 +62,7 @@ class LoginUserCommand:
             return token
         except ValueError as ve:
             current_app.logger.info(ve)
-            abort(403, description=str(ve)) 
+            abort(403, description=str(ve))
         except Exception as e:
             current_app.logger.info(e)
-            abort(500, description=ErrorMessages.SERVER_ERROR) 
-
-
+            abort(500, description=ErrorMessages.SERVER_ERROR)

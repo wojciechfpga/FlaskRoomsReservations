@@ -1,8 +1,17 @@
+"""
+Module with classes intended to execute DB write operations
+connected with rooms
+"""
+
 from flask import abort, current_app
-from app.models import Room,db
+from app.models import Room, db
 from app.constants.errors import ErrorMessages
 from app.constants.infos import InfoMessages
+
 class CreateRoomCommand:
+    """
+    Class for creating rooms
+    """
     @staticmethod
     def execute(name, capacity):
         """
@@ -24,10 +33,13 @@ class CreateRoomCommand:
         
         except Exception as e:
             current_app.logger.error(f"{ErrorMessages.F_STRING_ERROR}: {e}")
-            abort(500, description=ErrorMessages.SERVER_ERROR) 
+            abort(500, description=ErrorMessages.SERVER_ERROR)
         
 
 class UpdateRoomCommand:
+    """
+    Class for update some room
+    """
     @staticmethod
     def execute(room_id, name=None, capacity=None, is_active=None):
         """
@@ -60,6 +72,9 @@ class UpdateRoomCommand:
             abort(500, description=ErrorMessages.SERVER_ERROR)
 
 class DeleteRoomCommand:
+    """
+    Class for edeleting rooms in DB
+    """
     @staticmethod
     def execute(room_id):
         """
@@ -82,4 +97,3 @@ class DeleteRoomCommand:
         except Exception as e:
             current_app.logger.error(f"{ErrorMessages.F_STRING_ERROR}: {e}")
             abort(500, description=ErrorMessages.SERVER_ERROR)
-
