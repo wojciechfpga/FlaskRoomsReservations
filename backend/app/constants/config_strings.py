@@ -1,4 +1,4 @@
-class AppConfigStrings:
+class ConfigStrings:
     MONGO_URI = "mongodb://localhost:27017"
     CORS_ORIGINS = "http://localhost:3000"
     SWAGGER_URL = '/swagger'

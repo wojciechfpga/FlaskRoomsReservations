@@ -9,3 +9,5 @@ At port 5000 should be running app
 #Type init-db
 
 #You can use app. on p. 5000
+
+#__init__.py to be fixed - LEGACY and swagger
