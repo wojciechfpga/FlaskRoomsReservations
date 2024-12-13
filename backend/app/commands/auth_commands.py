@@ -23,14 +23,14 @@ class RegisterUserCommand:
         if not username or not password:
             abort(400, description=ErrorMessages.INVALID_AUTH)
 
-        try:
-            if AuthCommandsRepository.user_exists(username):
-                abort(409, description=ErrorMessages.USER_ALREADY_EXISTS)
+        
+        if AuthCommandsRepository.user_exists(username):
+            abort(409, description=ErrorMessages.USER_ALREADY_EXISTS)
 
-            user = AuthCommandsRepository.create_user(username, password, role)
-            return user.id
-        except Exception:
-            abort(500, description=ErrorMessages.SERVER_ERROR)
+        user = AuthCommandsRepository.create_user(username, password, role)
+
+        return user.id
+
 
 
 class LoginUserCommand:
@@ -43,21 +43,19 @@ class LoginUserCommand:
         """
         Authenticate a user and generate a JWT token if credentials are valid.
         """
-        try:
-            user = AuthCommandsRepository.get_user_by_username(username)
-            if not user or not user.check_password(password):
-                abort(403, description=ErrorMessages.INVALID_AUTH)
+        user = AuthCommandsRepository.get_user_by_username(username)
+        if not user or not user.check_password(password):
+            abort(403, description=ErrorMessages.INVALID_AUTH)
 
-            token = jwt.encode(
-                {
-                    "user_id": user.id,
-                    "role": user.role,
-                    "exp": datetime.datetime.utcnow() + datetime.timedelta(hours=1),
-                },
-                current_app.config["SECRET_KEY"],
-                algorithm="HS256",
-            )
-            return token
-        except Exception:
-            abort(500, description=ErrorMessages.SERVER_ERROR)
+        token = jwt.encode(
+            {
+                "user_id": user.id,
+                "role": user.role,
+                "exp": datetime.datetime.utcnow() + datetime.timedelta(hours=1),
+            },
+            current_app.config["SECRET_KEY"],
+            algorithm="HS256",
+        )
+        return token
+
 
