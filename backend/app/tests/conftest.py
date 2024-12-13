@@ -8,6 +8,3 @@ def app():
     app = create_app()
     app.config["SECRET_KEY"] = "testsecretkey"
     return app
-
-
-
