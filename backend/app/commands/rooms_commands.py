@@ -3,97 +3,57 @@ Module with classes intended to execute DB write operations
 connected with rooms
 """
 
-from flask import abort, current_app
-from app.models import Room, db
+from flask import abort
+from app.repositories.room_repository import RoomRepository
 from app.constants.errors import ErrorMessages
 from app.constants.infos import InfoMessages
 
 class CreateRoomCommand:
-    """
-    Class for creating rooms
-    """
     @staticmethod
     def execute(name, capacity):
         """
         Create a new room and save to the database, ensuring no room with the same name exists.
         """
-        try:
-            existing_room = Room.query.filter_by(name=name).first()
-            if existing_room:
-                raise ValueError(ErrorMessages.ROOM_EXIST)
+        if RoomRepository.get_room_by_name(name):
+            abort(409, description=ErrorMessages.ROOM_EXIST)
 
-            room = Room(name=name, capacity=capacity)
-            db.session.add(room)
-            db.session.commit()
-            return room.id
-        
-        except ValueError as ve:
-            current_app.logger.info(ve)
-            abort(409, description=str(ve))
-        
-        except Exception as e:
-            current_app.logger.error(f"{ErrorMessages.F_STRING_ERROR}: {e}")
-            abort(500, description=ErrorMessages.SERVER_ERROR)
-        
+        room = RoomRepository.create_room(name, capacity)
+        return room.id
+
 
 class UpdateRoomCommand:
-    """
-    Class for update some room
-    """
     @staticmethod
     def execute(room_id, name=None, capacity=None, is_active=None):
         """
         Update a room's details based on the given parameters.
         """
-        try:
-            room = Room.query.get(room_id)
-            if not room:
-                raise ValueError(ErrorMessages.ROOM_NOT_FOUND)
+        room = RoomRepository.get_room_by_id(room_id)
+        if not room:
+            abort(404, description=ErrorMessages.ROOM_NOT_FOUND)
 
-            if name is not None:
-                if Room.query.filter(Room.name == name, Room.id != room_id).first():
-                    raise ValueError(ErrorMessages.ROOM_EXIST)
-                room.name = name
+        if name and RoomRepository.check_room_name_conflict(name, room_id):
+            abort(409, description=ErrorMessages.ROOM_EXIST)
 
-            if capacity is not None:
-                room.capacity = capacity
-            
-            if is_active is not None:
-                room.is_active = is_active
+        if name:
+            room.name = name
+        if capacity:
+            room.capacity = capacity
+        if is_active is not None:
+            room.is_active = is_active
 
-            db.session.commit()
+        RoomRepository.update_room(room)
 
-        except ValueError as ve:
-            current_app.logger.info(ve)
-            abort(400, description=str(ve))
-
-        except Exception as e:
-            current_app.logger.error(f"{ErrorMessages.F_STRING_ERROR}: {e}")
-            abort(500, description=ErrorMessages.SERVER_ERROR)
 
 class DeleteRoomCommand:
-    """
-    Class for edeleting rooms in DB
-    """
     @staticmethod
     def execute(room_id):
         """
         Delete a room with the given room_id.
         """
-        try:
-            room = Room.query.get(room_id)
-            if not room:
-                raise ValueError(ErrorMessages.ROOM_NOT_FOUND)
+        room = RoomRepository.get_room_by_id(room_id)
+        if not room:
+            abort(404, description=ErrorMessages.ROOM_NOT_FOUND)
 
-            db.session.delete(room)
-            db.session.commit()
+        RoomRepository.delete_room(room)
+        return {"message": InfoMessages.ROOM_OPERATION_PASS}
 
-            return {"message": InfoMessages.ROOM_OPERATION_PASS}
-
-        except ValueError as ve:
-            current_app.logger.info(ve)
-            abort(404, description=str(ve))
-
-        except Exception as e:
-            current_app.logger.error(f"{ErrorMessages.F_STRING_ERROR}: {e}")
-            abort(500, description=ErrorMessages.SERVER_ERROR)
