@@ -4,7 +4,7 @@ connected with rooms
 """
 
 from flask import abort
-from app.repositories.room_repository import RoomRepository
+from app.repositories.room_commands_repository import RoomCommandsRepository
 from app.constants.errors import ErrorMessages
 from app.constants.infos import InfoMessages
 
@@ -14,10 +14,10 @@ class CreateRoomCommand:
         """
         Create a new room and save to the database, ensuring no room with the same name exists.
         """
-        if RoomRepository.get_room_by_name(name):
+        if RoomCommandsRepository.get_room_by_name(name):
             abort(409, description=ErrorMessages.ROOM_EXIST)
 
-        room = RoomRepository.create_room(name, capacity)
+        room = RoomCommandsRepository.create_room(name, capacity)
         return room.id
 
 
@@ -27,11 +27,11 @@ class UpdateRoomCommand:
         """
         Update a room's details based on the given parameters.
         """
-        room = RoomRepository.get_room_by_id(room_id)
+        room = RoomCommandsRepository.get_room_by_id(room_id)
         if not room:
             abort(404, description=ErrorMessages.ROOM_NOT_FOUND)
 
-        if name and RoomRepository.check_room_name_conflict(name, room_id):
+        if name and RoomCommandsRepository.check_room_name_conflict(name, room_id):
             abort(409, description=ErrorMessages.ROOM_EXIST)
 
         if name:
@@ -41,7 +41,7 @@ class UpdateRoomCommand:
         if is_active is not None:
             room.is_active = is_active
 
-        RoomRepository.update_room(room)
+        RoomCommandsRepository.update_room(room)
 
 
 class DeleteRoomCommand:
@@ -50,10 +50,10 @@ class DeleteRoomCommand:
         """
         Delete a room with the given room_id.
         """
-        room = RoomRepository.get_room_by_id(room_id)
+        room = RoomCommandsRepository.get_room_by_id(room_id)
         if not room:
             abort(404, description=ErrorMessages.ROOM_NOT_FOUND)
 
-        RoomRepository.delete_room(room)
+        RoomCommandsRepository.delete_room(room)
         return {"message": InfoMessages.ROOM_OPERATION_PASS}
 

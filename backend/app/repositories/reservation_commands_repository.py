@@ -2,7 +2,7 @@ from flask import abort
 from app.models import db, Reservation
 from app.constants.errors import ErrorMessages
 
-class ReservationRepository:
+class ReservationCommandsRepository:
     @staticmethod
     def get_reservation_by_id(reservation_id):
         """

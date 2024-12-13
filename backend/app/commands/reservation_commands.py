@@ -2,7 +2,7 @@
 Commands connected with DB write operations on Reservations
 """
 from flask import abort
-from app.repositories.reservation_repository import ReservationRepository
+from app.repositories.reservation_commands_repository import ReservationCommandsRepository
 from app.services.room_service import is_time_conflict
 from app.constants.errors import ErrorMessages
 
@@ -18,7 +18,7 @@ class CreateReservationCommand:
         if is_time_conflict(room_id, start_time, end_time):
             abort(409, description=ErrorMessages.RESERVATION_CONFLICT)
 
-        reservation = ReservationRepository.create_reservation(room_id, user_id, start_time, end_time)
+        reservation = ReservationCommandsRepository.create_reservation(room_id, user_id, start_time, end_time)
         return reservation.id
 
 
@@ -28,11 +28,11 @@ class SoftDeleteReservationCommand:
         """
         Mark reservation as deleted (in DB - soft delete)
         """
-        reservation = ReservationRepository.get_reservation_by_id(reservation_id)
+        reservation = ReservationCommandsRepository.get_reservation_by_id(reservation_id)
         if not reservation or reservation.is_deleted:
             abort(409, description=ErrorMessages.RESERVATION_NOT_FOUND)
 
-        ReservationRepository.soft_delete_reservation(reservation)
+        ReservationCommandsRepository.soft_delete_reservation(reservation)
 
 
 class UpdateReservationCommand:
@@ -44,11 +44,11 @@ class UpdateReservationCommand:
         if start_time >= end_time or is_time_conflict(room_id, start_time, end_time):
             abort(409, description=ErrorMessages.RESERVATION_CONFLICT)
 
-        reservation = ReservationRepository.get_reservation_by_id(reservation_id)
+        reservation = ReservationCommandsRepository.get_reservation_by_id(reservation_id)
         if not reservation or reservation.is_deleted:
             abort(409, description=ErrorMessages.RESERVATION_NOT_FOUND)
 
-        updated_reservation = ReservationRepository.update_reservation(reservation, start_time, end_time)
+        updated_reservation = ReservationCommandsRepository.update_reservation(reservation, start_time, end_time)
         return {
             "id": updated_reservation.id,
             "start_time": updated_reservation.start_time,

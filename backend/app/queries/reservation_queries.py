@@ -4,53 +4,43 @@ connected with reservations
 """
 
 from flask import abort
-from app.models import db, Reservation
+from app.repositories.reservation_queries_repository import ReservationQueriesRepository
 from app.constants.errors import ErrorMessages
+
 
 class ReservationQueries:
     """
     Class for handling reservation queries
     """
-    
+
     @staticmethod
     def get_reservations(room_id=None, start_time=None, end_time=None):
         """
-        Retrieving list of all reservations
+        Retrieve a list of all reservations based on optional filters.
         """
         try:
-            query = db.session.query(Reservation).filter(Reservation.is_deleted.is_(False))
-
-            if room_id:
-                query = query.filter(Reservation.room_id == room_id)
-            if start_time:
-                query = query.filter(Reservation.end_time > start_time)
-            if end_time:
-                query = query.filter(Reservation.start_time < end_time)
-
-            return query.order_by(Reservation.start_time).all()
+            return ReservationQueriesRepository.get_reservations_by_filters(room_id, start_time, end_time)
         except Exception:
-            db.session.rollback()
             abort(500, description=ErrorMessages.SERVER_ERROR)
 
     @staticmethod
     def get_reservations_by_user_id(user_id):
         """
-        Retrieve all reservations made by user
+        Retrieve all reservations made by a specific user.
         """
         try:
-            return db.session.query(Reservation).filter_by(user_id=user_id, is_deleted=False).all()
+            return ReservationQueriesRepository.get_reservations_by_user_id(user_id)
         except Exception:
-            db.session.rollback()
             abort(500, description=ErrorMessages.SERVER_ERROR)
 
     @staticmethod
     def get_reservation_by_id(reservation_id):
         """
-        Retrieve single reservation based on ID.
+        Retrieve a single reservation based on its ID.
         """
-        try:
-            return db.session.query(Reservation).filter_by(id=reservation_id, is_deleted=False).first()
-        except Exception:
-            db.session.rollback()
-            abort(500, description=ErrorMessages.SERVER_ERROR)
+        reservation = ReservationQueriesRepository.get_reservation_by_id(reservation_id)
+        if not reservation:
+            abort(404, description=ErrorMessages.RESERVATION_NOT_FOUND)
+        return reservation
+
 

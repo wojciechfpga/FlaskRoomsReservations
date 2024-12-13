@@ -2,7 +2,7 @@ from flask import abort, current_app
 from app.models import Room, db
 from app.constants.errors import ErrorMessages
 
-class RoomRepository:
+class RoomCommandsRepository:
     @staticmethod
     def get_room_by_id(room_id):
         """
