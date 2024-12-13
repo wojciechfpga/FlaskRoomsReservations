@@ -1,3 +1,6 @@
+"""
+Module of Repository for writing reservation data from the database.
+"""
 from flask import abort
 from app.models import db, Reservation
 from app.constants.errors import ErrorMessages

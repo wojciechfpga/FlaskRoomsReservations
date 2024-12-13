@@ -1,3 +1,6 @@
+"""
+Module of Repository for retrieving reservation data from the database.
+"""
 from flask import abort, current_app
 from app.models import db, Reservation
 from app.constants.errors import ErrorMessages

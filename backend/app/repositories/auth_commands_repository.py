@@ -1,3 +1,6 @@
+"""
+Module of Repository for auth
+"""
 from flask import current_app
 from app.models import db, User
 from app.constants.errors import ErrorMessages

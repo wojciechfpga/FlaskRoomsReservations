@@ -9,5 +9,3 @@
 #Type init-db
 
 #You can use app. on p. 5000
-
-#To be fixed - swagger

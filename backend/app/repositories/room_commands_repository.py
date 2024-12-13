@@ -1,3 +1,6 @@
+"""
+Module of Repository for writing room data from the database.
+"""
 from flask import abort, current_app
 from app.models import Room, db
 from app.constants.errors import ErrorMessages
