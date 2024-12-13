@@ -6,6 +6,6 @@
 
 #Go into back-end container terminal by -it option or by Docker GUI
 
-#Type init-db
+#Type flask-init-db
 
 #You can use app. on p. 5000
