@@ -6,7 +6,7 @@ connected with auth operations
 import datetime
 import jwt
 from flask import current_app, abort
-from app.models import db, User
+from app.repositories.user_repository import UserRepository
 from app.constants.errors import ErrorMessages
 
 class RegisterUserCommand:
@@ -22,15 +22,10 @@ class RegisterUserCommand:
             if not username or not password:
                 raise ValueError(ErrorMessages.INVALID_AUTH)
 
-            existing_user = db.session.query(User).filter_by(username=username).first()
-            if existing_user:
+            if UserRepository.user_exists(username):
                 raise ValueError(ErrorMessages.USER_ALREADY_EXISTS)
 
-            user = User(username=username, role=role)
-            user.set_password(password)
-            db.session.add(user)
-            db.session.commit()
-
+            user = UserRepository.create_user(username, password, role)
             return user.id
         except ValueError as ve:
             current_app.logger.info(ve)
@@ -49,8 +44,7 @@ class LoginUserCommand:
         Authenticate user and generate JWT token if credentials are valid.
         """
         try:
-            user = db.session.query(User).filter_by(username=username).first()
-
+            user = UserRepository.get_user_by_username(username)
             if not user or not user.check_password(password):
                 raise ValueError(ErrorMessages.INVALID_AUTH)
 
